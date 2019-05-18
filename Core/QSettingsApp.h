@@ -29,11 +29,6 @@
 
 // ======================================================================
 
-struct TEST_STR {
-	int val1;
-	int val2;
-};
-
 class QSettingsApp : public QSettings
 {
   Q_OBJECT
@@ -41,11 +36,6 @@ class QSettingsApp : public QSettings
 public:
 	MAKE_SETTINGS_TABLE()
 	
-	TEST_STR QWE = {
-		123,
-		456
-	};
-
 // ======================================================================
 
 public:

@@ -12,6 +12,7 @@
 
 // Utils
 #include "Utils/QTestStringUtils.h"
+#include "QTestBitsSet.h"
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +22,7 @@ int main(int argc, char *argv[])
 	QTest::qExec(new QTestMainClass, argc, argv);
 //	QTest::qExec(new QTestComPortThread, argc, argv);
 	QTest::qExec(new QTestStringUtils, argc, argv);
+	QTest::qExec(new QTestBitsSet, argc, argv);
   
   return 0;
 }
