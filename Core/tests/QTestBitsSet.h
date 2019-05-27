@@ -13,11 +13,13 @@ public:
 // ======================================================================
 	
 private slots:
+	void testGetBitsSet();
 	void testSetBit();
 	void testTestBit();
 	void testResetBit();
 	void testCopyObject();
 	void testIsEmpty();
+	void testTestBits();
 	
 };
 

@@ -10,6 +10,16 @@ QTestBitsSet::QTestBitsSet(QObject *parent) : QObject(parent)
 	
 }
 
+// ======================================================================
+
+void QTestBitsSet::testGetBitsSet()
+{
+	QBitsSet bitSet(0x41); // position is 6
+	QCOMPARE(bitSet.getBitsSet(), (quint32)0x41);
+}
+
+// ======================================================================
+
 void QTestBitsSet::testSetBit()
 {
 	QBitsSet bitSet; // position is 6
@@ -62,6 +72,14 @@ void QTestBitsSet::testIsEmpty()
 	QCOMPARE(bitSet.isEmpty(), false);
 	bitSet.resetBit(6);
 	QCOMPARE(bitSet.isEmpty(), true);
+}
+
+// ======================================================================
+
+void QTestBitsSet::testTestBits()
+{
+	QBitsSet bitSet(0x123);
+	QCOMPARE(bitSet.testBits(0x123), true);
 }
 
 // ======================================================================

@@ -51,6 +51,18 @@ bool QBitsSet::testBit(quint8 pos) const
 // ======================================================================
 
 /**
+	* @brief  Test bit mask
+	* @param  
+	* @retval 
+	*/
+bool QBitsSet::testBits(quint32 mask) const
+{
+	return mBits & mask;
+}
+
+// ======================================================================
+
+/**
 	* @brief  Check if bits set is empty
 	* @param  
 	* @retval true if bits set is empty
