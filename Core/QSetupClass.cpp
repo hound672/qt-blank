@@ -17,7 +17,7 @@
 // ======================================================================
 
 QSetupClass::QSetupClass(int argc, char *argv[]): 
-	QObject(NULL),
+	QObject(nullptr),
 	mSettings(SETTINGS_FILE_NAME)
 {
 #ifdef USE_EPOOL_EVENT
@@ -25,14 +25,14 @@ QSetupClass::QSetupClass(int argc, char *argv[]):
 #endif // USE_EPOOL_EVENT
 	mApp = new APP_CLASS(argc, argv);
 
-#ifndef Q_OS_WIN
+#if  defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
 	CatchUnixSignals({SIGINT});
 #endif // Q_OS_WIN
 	
 	connect(mApp, &APP_CLASS::aboutToQuit, this, &QSetupClass::slotQuitApp);
 	
 	readSettings();
-	createLogFile(mSettings.COMMON.LOG_FILE_NAME);
+	createLogFile();
 	
 	addArgvParams();
 	parseArgvParams();
@@ -278,20 +278,27 @@ void QSetupClass::readSettings()
 	* @param  
 	* @retval 
 	*/
-void QSetupClass::createLogFile(const QString &logFileName)
+void QSetupClass::createLogFile()
 {
 	QDebugEx::EDebugExFlags flags;
 	
-#ifdef DEBUG_DEL_OLD
+#ifdef DEBUG_LOG_DEL_OLD
 	flags |= QDebugEx::flgDelOld;
-#endif
-#ifdef DEBUG_ONLY_FILE
-	flags |= QDebugEx::flgOnlyFile;
-#endif
+#endif // DEBUG_LOG_DEL_OLD
+
+#ifdef DEBUG_LOG_USE_FILE
+	flags |= QDebugEx::flgUseFile;
+#endif // DEBUG_LOG_USE_FILE
+
+#ifdef DEBUG_LOG_USE_STD
+	flags |= QDebugEx::flgUseStd;
+#endif // DEBUG_LOG_USE_FILE
+
 #ifdef DEBUG_USE_UTC
 	flags |= QDebugEx::flgUseUtc;
-#endif
-	QDebugEx(logFileName, flags);	
+#endif // DEBUG_USE_UTC
+
+	QDebugEx(flags, mSettings.COMMON.LOG_FILE_NAME);
 }
 
 // ======================================================================

@@ -15,15 +15,16 @@ public:
 	enum EDebugExFlag {
 		flgNoOption			= 0x00,
 		flgDelOld				= 0x01,
-		flgOnlyFile			= 0x02,
-		flgUseUtc				= 0x04,
+		flgUseFile			= 0x02,
+		flgUseStd				= 0x04,
+		flgUseUtc				= 0x08,
 	};
 	Q_DECLARE_FLAGS(EDebugExFlags, EDebugExFlag)
 	
 // ======================================================================
 	
 public:
-  QDebugEx(const QString &fileName, EDebugExFlags flags = flgNoOption);
+	QDebugEx(EDebugExFlags flags = flgNoOption, const QString &fileName = QString());
 
 // ======================================================================
 	

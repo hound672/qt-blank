@@ -71,7 +71,7 @@ protected:
 #endif // Q_OS_WIN
 	void setEnv(const QStringList vars);
 	void readSettings();
-	void createLogFile(const QString &logFileName);
+	void createLogFile();
 	void addArgvParams();
 	void parseArgvParams();
 	virtual void makeSignalSlots() = 0;

@@ -5,16 +5,19 @@
 #include <QTextCodec>
 #include <QMutex>
 #include <QMutexLocker>
+#ifdef Q_OS_ANDROID
+	#include <android/log.h>
+#endif // Q_OS_ANDROID
 
 #include "Core/Includes.h"
 
 #include "QDebugEx.h"
 
-QTextStream sTs;
-QFile sOutFile;
-QMutex sMutex;
-QDebugEx::EDebugExFlags sFlags;
-bool sDebugMode = false;
+static QTextStream sTs;
+static QFile sOutFile;
+static QMutex sMutex;
+static QDebugEx::EDebugExFlags sFlags;
+static bool sDebugMode = false;
 
 
 // ======================================================================
@@ -26,7 +29,7 @@ bool sDebugMode = false;
   * @param  onlyFile: при true пишет лог только в файл
   * @retval None
   */
-QDebugEx::QDebugEx(const QString &fileName, EDebugExFlags flags)
+QDebugEx::QDebugEx(EDebugExFlags flags, const QString &fileName)
 {
 	sFlags = flags;
 	
@@ -38,10 +41,12 @@ QDebugEx::QDebugEx(const QString &fileName, EDebugExFlags flags)
 	mode |= QIODevice::WriteOnly;
 	mode |= sFlags.testFlag(EDebugExFlag::flgDelOld) ? QIODevice::NotOpen : QIODevice::Append;
 
-	sOutFile.setFileName(fileName);
-  if (!sOutFile.open(mode)) {
-    throw "Cannot open file!";
-  }
+	if (sFlags.testFlag(EDebugExFlag::flgUseFile)) {
+		sOutFile.setFileName(fileName);
+		if (!sOutFile.open(mode)) {
+			throw "Cannot open file!";
+		}
+	}
   sTs.setDevice(&sOutFile);
 	
   qInstallMessageHandler(myMessageOutput);
@@ -100,15 +105,23 @@ void QDebugEx::myMessageOutput(QtMsgType type, const QMessageLogContext& context
 		typeMessage = "UNK";
 	} // switch (type)
 
-
   str = QString("[%1] [%2] [%3@%4] %5").arg(date.constData()).arg(typeMessage.constData())
                           .arg(fileName).arg(context.line).arg(localMsg.constData());
 
-  sTs << str << "\r\n";
-  sTs.flush();
-  if (!sFlags.testFlag(EDebugExFlag::flgOnlyFile)) {
+	// ======================================================================
+	if (sFlags.testFlag(EDebugExFlag::flgUseFile)) {
+		sTs << str << "\r\n";
+		sTs.flush();
+	}
+	// ======================================================================
+	if (sFlags.testFlag(EDebugExFlag::flgUseStd)) {
+
+#ifdef Q_OS_ANDROID
+		__android_log_write(ANDROID_LOG_INFO, "", str.toLocal8Bit().constData());
+#else
     QTextStream screen(stdout, QIODevice::WriteOnly);
     screen << str << endl;
+#endif
   }
 }
 
